@@ -3,12 +3,12 @@ kind: Application
 metadata:
   name: global-dev-root
   namespace: argocd
-spec: 
+spec:
   project: dev-project
   source:
-    repoURL: https://github.com/ramdy1449/gitops-argocd.git 
+    repoURL: https://github.com/ramdy1449/gitops-argocd.git
     targetRevision: main
-    path: environments/dev 
+    path: environments/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
