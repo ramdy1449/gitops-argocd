@@ -4,17 +4,17 @@ metadata:
   name: monitoring
   namespace: argocd
 spec:
-  project: global-project
+  project: dev-project
   source:
     repoURL: https://ramdy1449.github.io/helm-charts
     chart: monitoring
-    targetRevision: 0.1.2 
+    targetRevision: 0.1.2
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
   syncPolicy:
     automated:
-      prune: true 
+      prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true 
+      - CreateNamespace=true
