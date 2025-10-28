@@ -1,0 +1,20 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application 
+metadata:
+  name: chat 
+  namespace: argocd 
+spec: 
+  project: global-project 
+  source:
+    repoURL: https://ramdy1449.github.io/helm-charts
+    chart: chat 
+    targetRevision: 0.1.2
+  destination:
+    server: https://kubernetes.default.svc 
+    namespace: chat 
+  syncPolicy:
+    automated:
+      prune: true 
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

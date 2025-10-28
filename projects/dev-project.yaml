@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata: 
+  name: dev-project
+  namespace: argocd
+spec:
+  description: "dev env project for all apps"
+  sourceRepos:
+    - https://ramdy1449.github.io/helm-charts
+    - https://github.com/ramdy1449/gitops-argocd.git
+  destination:
+    - namespace: '*'
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  orphanedResources:
+    warn: false 
