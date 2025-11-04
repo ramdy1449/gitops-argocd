@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://ramdy1449.github.io/helm-charts
     chart: monitoring
-    targetRevision: 0.1.3
+    targetRevision: 0.1.4
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
