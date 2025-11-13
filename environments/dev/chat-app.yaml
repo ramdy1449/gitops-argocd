@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://ramdy1449.github.io/helm-charts
     chart: chat
-    targetRevision: 0.1.6
+    targetRevision: 0.1.7
   destination:
     server: https://kubernetes.default.svc
     namespace: chat
