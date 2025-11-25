@@ -1,17 +1,17 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: expense
+  name: bank
   namespace: argocd
 spec:
   project: dev-project
   source:
     repoURL: https://ramdy1449.github.io/helm-charts
-    chart: expense
-    targetRevision: 0.1.7
+    chart: bank
+    targetRevision: 0.1.0
   destination:
     server: https://kubernetes.default.svc
-    namespace: expense
+    namespace: bank
   syncPolicy:
     automated:
       prune: true
