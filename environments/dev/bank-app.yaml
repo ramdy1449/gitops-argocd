@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://ramdy1449.github.io/helm-charts
     chart: bank
-    targetRevision: 0.1.9
+    targetRevision: 0.2.0
   destination:
     server: https://kubernetes.default.svc
     namespace: bank
