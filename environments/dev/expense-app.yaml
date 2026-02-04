@@ -11,6 +11,20 @@ spec:
     repoURL: https://ramdy1449.github.io/helm-charts
     chart: expense
     targetRevision: 0.2.11
+    helm:
+      values: |
+        storage:
+          storageClass: nfs-client
+        
+        public:
+          gatewayUrl: "https://gateway.localtest.me"
+          expenseUrl: "https://expense.localtest.me"
+          chatUrl: "https://chat.localtest.me"
+          bankUrl: "https://bank.localtest.me"
+        
+        ingress:
+          enabled: true
+          host: "expense.localtest.me"
   destination:
     server: https://kubernetes.default.svc
     namespace: expense

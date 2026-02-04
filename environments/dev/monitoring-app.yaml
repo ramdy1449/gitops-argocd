@@ -11,6 +11,37 @@ spec:
     repoURL: https://ramdy1449.github.io/helm-charts
     chart: monitoring
     targetRevision: 0.1.12
+    helm:
+      values: |
+        # Storage
+        storage:
+          storageClass: nfs-client
+        
+        # Ingress for all monitoring components
+        ingress:
+          enabled: true
+          grafana:
+            host: "grafana.localtest.me"
+          prometheus:
+            host: "prometheus.localtest.me"
+          alertmanager:
+            host: "alertmanager.localtest.me"
+        
+        # Grafana
+        grafana:
+          serviceName: grafana
+          servicePort: 3000
+        
+        # Prometheus
+        prometheus:
+          serviceName: prometheus
+          servicePort: 9090
+        
+        # Alertmanager
+        alertmanager:
+          enabled: false
+          serviceName: alertmanager
+          servicePort: 9093
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
