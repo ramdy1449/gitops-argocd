@@ -1,9 +1,6 @@
 # =============================================================================
 # LONGHORN - Kubernetes-Native Storage
 # =============================================================================
-# Sync Wave: -1 (after networking layer, before applications)
-# This creates the 'longhorn' StorageClass for dynamic provisioning
-# =============================================================================
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
@@ -18,10 +15,8 @@ spec:
     chart: longhorn
     targetRevision: 1.6.0
     helm:
+      skipCrds: false
       values: |
-        # ===========================================
-        # Single-Node / Minikube Settings
-        # ===========================================
         defaultSettings:
           defaultReplicaCount: 1
           guaranteedEngineManagerCPU: 5
@@ -31,24 +26,18 @@ spec:
           defaultDataLocality: "best-effort"
           replicaSoftAntiAffinity: true
           backupTarget: ""
-          
-        # Make longhorn the default StorageClass
         persistence:
           defaultClass: true
           defaultClassReplicaCount: 1
           reclaimPolicy: Delete
-        
-        # ===========================================
-        # DISABLE built-in Ingress (using Traefik IngressRoute instead)
-        # ===========================================
         ingress:
           enabled: false
-        
-        # Resource limits (minimal for minikube)
         longhornManager:
           priorityClass: ~
         longhornDriver:
           priorityClass: ~
+        preUpgradeChecker:
+          jobEnabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: longhorn-system
@@ -58,6 +47,7 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true
     retry:
       limit: 5
       backoff:
