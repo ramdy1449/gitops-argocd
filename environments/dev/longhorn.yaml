@@ -15,7 +15,6 @@ spec:
     chart: longhorn
     targetRevision: 1.6.0
     helm:
-      skipCrds: false
       values: |
         defaultSettings:
           defaultReplicaCount: 1
@@ -47,7 +46,6 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - ServerSideApply=true
     retry:
       limit: 5
       backoff:
