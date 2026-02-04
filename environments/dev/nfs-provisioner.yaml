@@ -1,0 +1,52 @@
+# =============================================================================
+# NFS SUBDIR EXTERNAL PROVISIONER - Dynamic PVC Provisioning
+# =============================================================================
+# Sync Wave: -1 (after networking layer, before applications)
+# Creates 'nfs-client' StorageClass for dynamic provisioning
+# Data persists on host machine at ~/nfs-data/
+# =============================================================================
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nfs-provisioner
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: dev-project
+  source:
+    repoURL: https://kubernetes-sigs.github.io/nfs-subdir-external-provisioner
+    chart: nfs-subdir-external-provisioner
+    targetRevision: 4.0.18
+    helm:
+      values: |
+        # NFS Server Configuration
+        # Replace <HOST_IP> with your actual host IP (run: hostname -I | awk '{print $1}')
+        nfs:
+          server: 172.18.0.2
+          path: /data
+        
+        # StorageClass Configuration
+        storageClass:
+          name: nfs-client
+          defaultClass: true
+          reclaimPolicy: Retain
+          archiveOnDelete: true
+        
+        # Replica count
+        replicaCount: 1
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: nfs-provisioner
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

@@ -1,7 +1,7 @@
 # =============================================================================
 # TRAEFIK INGRESSROUTES - Infrastructure Services
 # =============================================================================
-# ArgoCD and Longhorn IngressRoutes with TLS
+# ArgoCD IngressRoute with TLS
 # Uses default certificate from TLSStore
 # =============================================================================
 
@@ -24,27 +24,5 @@ spec:
       kind: Rule
       services:
         - name: argocd-server
-          port: 80
-  tls: {}
-
----
-# =============================================================================
-# LONGHORN UI - IngressRoute
-# =============================================================================
-apiVersion: traefik.io/v1alpha1
-kind: IngressRoute
-metadata:
-  name: longhorn-ui
-  namespace: longhorn-system
-  labels:
-    app: longhorn
-spec:
-  entryPoints:
-    - websecure
-  routes:
-    - match: Host(`longhorn.localtest.me`)
-      kind: Rule
-      services:
-        - name: longhorn-frontend
           port: 80
   tls: {}
