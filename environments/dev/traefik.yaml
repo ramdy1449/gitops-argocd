@@ -1,0 +1,151 @@
+# =============================================================================
+# TRAEFIK - Ingress Controller & Load Balancer
+# =============================================================================
+# Sync Wave: -3 (after MetalLB, before cert-manager)
+# Features: Ingress routing, TLS termination, Dashboard, Middleware
+# =============================================================================
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-3"
+spec:
+  project: dev-project
+  source:
+    repoURL: https://traefik.github.io/charts
+    chart: traefik
+    targetRevision: 26.1.0
+    helm:
+      values: |
+        # ===========================================
+        # Deployment Settings
+        # ===========================================
+        deployment:
+          replicas: 1
+        
+        # ===========================================
+        # Service Settings (LoadBalancer via MetalLB)
+        # ===========================================
+        service:
+          enabled: true
+          type: LoadBalancer
+          annotations: {}
+        
+        # ===========================================
+        # Ports Configuration
+        # ===========================================
+        ports:
+          web:
+            port: 8000
+            expose: true
+            exposedPort: 80
+            protocol: TCP
+            redirectTo:
+              port: websecure
+          websecure:
+            port: 8443
+            expose: true
+            exposedPort: 443
+            protocol: TCP
+            tls:
+              enabled: true
+        
+        # ===========================================
+        # Dashboard IngressRoute
+        # ===========================================
+        ingressRoute:
+          dashboard:
+            enabled: true
+            matchRule: Host(`traefik.localtest.me`)
+            entryPoints:
+              - websecure
+            middlewares: []
+            tls: {}
+        
+        # ===========================================
+        # Dashboard Settings
+        # ===========================================
+        api:
+          dashboard: true
+          insecure: false
+        
+        # ===========================================
+        # Logs
+        # ===========================================
+        logs:
+          general:
+            level: INFO
+          access:
+            enabled: true
+            format: json
+        
+        # ===========================================
+        # Providers
+        # ===========================================
+        providers:
+          kubernetesCRD:
+            enabled: true
+            allowCrossNamespace: true
+          kubernetesIngress:
+            enabled: true
+            allowExternalNameServices: true
+            publishedService:
+              enabled: true
+        
+        # ===========================================
+        # Additional Arguments
+        # ===========================================
+        additionalArguments:
+          - "--serversTransport.insecureSkipVerify=true"
+        
+        # ===========================================
+        # Resources
+        # ===========================================
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "256Mi"
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=false
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m
+---
+# =============================================================================
+# TRAEFIK CONFIG - TLS Store and Infrastructure IngressRoutes
+# =============================================================================
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: traefik-config
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: dev-project
+  source:
+    repoURL: https://github.com/ramdy1449/gitops-argocd.git
+    targetRevision: main
+    path: environments/dev/traefik-config
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

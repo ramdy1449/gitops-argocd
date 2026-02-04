@@ -1,0 +1,66 @@
+# =============================================================================
+# LONGHORN - Kubernetes-Native Storage
+# =============================================================================
+# Sync Wave: -1 (after networking layer, before applications)
+# This creates the 'longhorn' StorageClass for dynamic provisioning
+# =============================================================================
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: longhorn
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "-1"
+spec:
+  project: dev-project
+  source:
+    repoURL: https://charts.longhorn.io
+    chart: longhorn
+    targetRevision: 1.6.0
+    helm:
+      values: |
+        # ===========================================
+        # Single-Node / Minikube Settings
+        # ===========================================
+        defaultSettings:
+          defaultReplicaCount: 1
+          guaranteedEngineManagerCPU: 5
+          guaranteedReplicaManagerCPU: 5
+          storageMinimalAvailablePercentage: 10
+          storageOverProvisioningPercentage: 100
+          defaultDataLocality: "best-effort"
+          replicaSoftAntiAffinity: true
+          backupTarget: ""
+          
+        # Make longhorn the default StorageClass
+        persistence:
+          defaultClass: true
+          defaultClassReplicaCount: 1
+          reclaimPolicy: Delete
+        
+        # ===========================================
+        # DISABLE built-in Ingress (using Traefik IngressRoute instead)
+        # ===========================================
+        ingress:
+          enabled: false
+        
+        # Resource limits (minimal for minikube)
+        longhornManager:
+          priorityClass: ~
+        longhornDriver:
+          priorityClass: ~
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: longhorn-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+    retry:
+      limit: 5
+      backoff:
+        duration: 5s
+        factor: 2
+        maxDuration: 3m

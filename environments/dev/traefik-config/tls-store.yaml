@@ -1,0 +1,22 @@
+# =============================================================================
+# TRAEFIK TLS CONFIGURATION
+# =============================================================================
+# Sets the default TLS certificate for all IngressRoutes
+# This eliminates the need to specify secretName in each IngressRoute
+# =============================================================================
+
+---
+# =============================================================================
+# TLSStore: Default Certificate
+# =============================================================================
+# Traefik will use this certificate for all HTTPS traffic
+# unless a specific certificate is specified in the IngressRoute
+# =============================================================================
+apiVersion: traefik.io/v1alpha1
+kind: TLSStore
+metadata:
+  name: default
+  namespace: kube-system
+spec:
+  defaultCertificate:
+    secretName: wildcard-localtest-me-tls

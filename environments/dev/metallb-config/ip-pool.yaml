@@ -1,0 +1,26 @@
+# =============================================================================
+# METALLB CONFIGURATION - Dev/Minikube
+# =============================================================================
+# IP Pool: 192.168.49.200 - 192.168.49.202
+# Mode: Layer 2 (ARP-based, works in most networks)
+# =============================================================================
+
+---
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: dev-pool
+  namespace: metallb-system
+spec:
+  addresses:
+    - 192.168.49.200-192.168.49.202
+
+---
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: dev-l2-advertisement
+  namespace: metallb-system
+spec:
+  ipAddressPools:
+    - dev-pool

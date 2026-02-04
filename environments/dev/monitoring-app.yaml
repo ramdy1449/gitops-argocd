@@ -3,12 +3,14 @@ kind: Application
 metadata:
   name: monitoring
   namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
 spec:
   project: dev-project
   source:
     repoURL: https://ramdy1449.github.io/helm-charts
     chart: monitoring
-    targetRevision: 0.1.9
+    targetRevision: 0.1.10
   destination:
     server: https://kubernetes.default.svc
     namespace: monitoring
