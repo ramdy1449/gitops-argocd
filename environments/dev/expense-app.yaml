@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://ramdy1449.github.io/helm-charts
     chart: expense
-    targetRevision: 0.2.8
+    targetRevision: 0.2.9
   destination:
     server: https://kubernetes.default.svc
     namespace: expense
