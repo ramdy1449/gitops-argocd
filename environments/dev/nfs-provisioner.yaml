@@ -30,7 +30,7 @@ spec:
         storageClass:
           name: nfs-client
           defaultClass: true
-          reclaimPolicy: Retain
+          reclaimPolicy: Delete
           archiveOnDelete: true
         
         # Replica count
