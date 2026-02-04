@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://ramdy1449.github.io/helm-charts
     chart: gateway
-    targetRevision: 0.2.9
+    targetRevision: 0.2.10
   destination:
     server: https://kubernetes.default.svc
     namespace: gateway
