@@ -1,0 +1,31 @@
+# =============================================================================
+# ARGOCD - Ingress (Standard Kubernetes Ingress with Traefik)
+# =============================================================================
+# Replaces: infrastructure-ingressroutes.yaml
+# Note: ArgoCD server uses gRPC, so we need the backend protocol annotation
+# =============================================================================
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: argocd
+  namespace: argocd
+  labels:
+    app: argocd
+  annotations:
+    traefik.ingress.kubernetes.io/router.tls: "true"
+spec:
+  ingressClassName: traefik
+  tls:
+    - hosts:
+        - argocd.localtest.me
+  rules:
+    - host: argocd.localtest.me
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: argocd-server
+                port:
+                  number: 80

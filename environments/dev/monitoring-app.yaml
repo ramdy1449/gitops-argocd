@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://ramdy1449.github.io/helm-charts
     chart: monitoring
-    targetRevision: 0.1.12
+    targetRevision: 0.1.13
     helm:
       values: |
         # Storage
