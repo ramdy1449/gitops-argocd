@@ -28,10 +28,15 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: gateway
+  ignoreDifferences:
+    - group: ""
+      kind: PersistentVolumeClaim
+      jsonPointers:
+        - /spec
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-      - Replace=true
+      - RespectIgnoreDifferences=true

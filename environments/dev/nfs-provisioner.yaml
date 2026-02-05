@@ -21,7 +21,6 @@ spec:
     helm:
       values: |
         # NFS Server Configuration
-        # Replace <HOST_IP> with your actual host IP (run: hostname -I | awk '{print $1}')
         nfs:
           server: 172.18.0.2
           path: /data
@@ -38,12 +37,18 @@ spec:
   destination:
     server: https://kubernetes.default.svc
     namespace: nfs-provisioner
+  ignoreDifferences:
+    - group: storage.k8s.io
+      kind: StorageClass
+      jsonPointers:
+        - /reclaimPolicy
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true
     retry:
       limit: 5
       backoff:
