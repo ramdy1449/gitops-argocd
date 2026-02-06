@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://ramdy1449.github.io/helm-charts
     chart: chat
-    targetRevision: 0.2.11
+    targetRevision: 0.2.12
     helm:
       values: |
         storage:
